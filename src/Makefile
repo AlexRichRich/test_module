@@ -11,3 +11,13 @@ test:
 	sudo insmod procfs_boofer.ko
 	sudo rmmod procfs_boofer.ko
 	dmesg
+q:
+	sudo dmesg -C
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+	sudo insmod procfs_boofer.ko
+	cat /proc/read_dev_boof
+	echo 123 > /proc/read_dev_boof
+	cat /proc/read_dev_boof
+	cat /proc/read_dev_boof
+	#sudo rmmod procfs_boofer.ko
+	dmesg

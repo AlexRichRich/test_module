@@ -34,14 +34,14 @@ static ssize_t procfile_read(struct file *filePointer, char __user *buffer,
 	return procfs_buffer_size;
 }
 
-static int cmd_test(struct file *file) {
-	char *argv[] = { "usr/bin/sudo", "/usr/bin/sh", "/usr/bin/test.sh", NULL };
+static int umh_test( void ) {
+	char *argv[] = { "/bin/bash", "-c", "bin/echo 123 >> proc/read_dev_boof", NULL };
 	static char *envp[] = {
-	"HOME=/",
-	"TERM=linux",
-	"PATH=/sbin:/bin:/usr/sbin:/usr/bin", NULL };
+		"HOME=/",
+		"TERM=linux",
+		"PATH=/sbin:/bin:/usr/sbin:/usr/bin", NULL };
 
-	return call_usermodehelper_pipe( argv[0], argv, envp, file );
+	return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
 }
 
 static ssize_t procfile_write(struct file *file, const char __user *buffer, size_t len, loff_t *off) {
@@ -59,12 +59,12 @@ static ssize_t procfile_write(struct file *file, const char __user *buffer, size
 
 static int procfile_open(struct inode *inode, struct file *file) {
 	try_module_get(THIS_MODULE);
-	cmd_test(file);
 	return 0;
 }
 
 static int procfile_close(struct inode *inode, struct file *file) {
 	module_put(THIS_MODULE);
+	pr_info("EXIT CODE OF TEST - %d", umh_test());
 	return 0;
 }
 
