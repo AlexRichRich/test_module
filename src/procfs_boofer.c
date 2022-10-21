@@ -35,7 +35,7 @@ static ssize_t procfile_read(struct file *filePointer, char __user *buffer,
 }
 
 static int umh_test( void ) {
-	char *argv[] = { "/bin/bash", "-c", "bin/echo 123 >> proc/read_dev_boof", NULL };
+	char *argv[] = { "/bin/bash", "-c", "/bin/sh /tmp/test.sh >> /proc/read_dev_boof", NULL };
 	static char *envp[] = {
 		"HOME=/",
 		"TERM=linux",
@@ -64,7 +64,6 @@ static int procfile_open(struct inode *inode, struct file *file) {
 
 static int procfile_close(struct inode *inode, struct file *file) {
 	module_put(THIS_MODULE);
-	pr_info("EXIT CODE OF TEST - %d", umh_test());
 	return 0;
 }
 
@@ -94,6 +93,7 @@ static int __init proc_file_init(void) {
 	proc_set_size(read_dev_file, 80);
 	proc_set_user(read_dev_file, GLOBAL_ROOT_UID, GLOBAL_ROOT_GID);
 	pr_info("/proc/%s created", PROCFS_NAME);
+	pr_info("EXIT CODE OF FUNC %d\n", umh_test());
 	return 0;
 }
 
