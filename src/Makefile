@@ -8,13 +8,6 @@ clean:
 	rm -rf /tmp/boof_script.sh
 test:
 	sudo dmesg -C
-	sudo insmod sysfs_file.ko
-	sudo rmmod sysfs_file.ko
-	sudo insmod procfs_boofer.ko
-	sudo rmmod procfs_boofer.ko
-	dmesg
-q:
-	sudo dmesg -C
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 	sudo insmod sysfs_file.ko
 	sudo insmod procfs_boofer.ko
