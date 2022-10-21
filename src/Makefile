@@ -3,6 +3,12 @@ obj-m += procfs_boofer.o
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 	cp boof_script.sh /tmp/boof_script.sh
+run: all
+	sudo insmod sysfs_file.ko
+	sudo insmod procfs_boofer.ko
+stop:
+	sudo rmmod sysfs_file.ko
+	sudo rmmod procfs_boofer.ko
 clean:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
 	rm -rf /tmp/boof_script.sh
