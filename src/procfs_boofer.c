@@ -34,25 +34,18 @@ static ssize_t procfile_read(struct file *filePointer, char __user *buffer,
 	return procfs_buffer_size;
 }
 
-static int umh_test( void ) {
-	char *argv[] = { "/bin/bash", "-c", "/bin/sh /tmp/test.sh >> /proc/read_dev_boof", NULL };
-	static char *envp[] = {
-		"HOME=/",
-		"TERM=linux",
-		"PATH=/sbin:/bin:/usr/sbin:/usr/bin", NULL };
-
-	return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
-}
-
 static ssize_t procfile_write(struct file *file, const char __user *buffer, size_t len, loff_t *off) {
+	unsigned long boof_len = procfs_buffer_size;
 	if (len > PROCFS_MAX_SIZE)
 		procfs_buffer_size = PROCFS_MAX_SIZE;
 	else
 		procfs_buffer_size = len;
-	if (copy_from_user(procfs_buffer, buffer, procfs_buffer_size)) {
+	if (boof_len + procfs_buffer_size >= PROCFS_MAX_SIZE)
+		boof_len = 0;
+	if (copy_from_user(procfs_buffer+boof_len, buffer, procfs_buffer_size)) {
 		return -EFAULT;
 	}
-
+	procfs_buffer_size += boof_len;
 	pr_info("procfile_write: write %lu bytes\n", procfs_buffer_size);
 	return procfs_buffer_size;
 }
