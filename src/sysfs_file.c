@@ -13,13 +13,15 @@
 }
 
 static struct kobject *read_dev_module; 
-/* Переменная, которую нужно будет изменять. */ 
+// variable to define the operation
 static int read_dev = 0;
 
 static ssize_t read_dev_show(struct kobject *kobj, 
 				struct kobj_attribute *attr, char *buf) { 
     return sprintf(buf, "%d\n", read_dev); 
 }
+
+
 static int boof_script_call( void ) {
 	char *argv[] = { "/bin/bash", "-c", "/bin/sh /tmp/boof_script.sh >> /proc/read_dev_boof", NULL };
 	static char *envp[] = {
@@ -42,20 +44,20 @@ static ssize_t read_dev_store(struct kobject *kobj,
  
 static struct kobj_attribute read_dev_attribute = __MY_ATTR(read_dev, 0777, read_dev_show, (void *)read_dev_store); 
 
-    static int __init read_dev_module_init(void) { 
+static int __init read_dev_module_init(void) { 
 	int error = 0; 
-
-	pr_info("read_dev_module: initialised\n"); 
-
 	read_dev_module = kobject_create_and_add("read_dev_module", kernel_kobj); 
-	if (!read_dev_module) 
+	if (!read_dev_module) { 
+		pr_alert("read_dev_module initialization in /sys/kernel/ failed\n");
 		return -ENOMEM; 
+	}
 
 	error = sysfs_create_file(read_dev_module, &read_dev_attribute.attr); 
 	if (error) { 
 		pr_info("failed to create the read_dev file " 
 		"in /sys/kernel/read_dev_module\n"); 
 	} 		 
+	pr_info("read_dev_module: initialised\n"); 
 	return error; 
 } 
  
