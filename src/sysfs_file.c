@@ -21,7 +21,7 @@ static ssize_t read_dev_show(struct kobject *kobj,
     return sprintf(buf, "%d\n", read_dev); 
 }
 static int boof_script_call( void ) {
-	char *argv[] = { "/bin/bash", "-c", "/bin/sh /tmp/test.sh >> /proc/read_dev_boof", NULL };
+	char *argv[] = { "/bin/bash", "-c", "/bin/sh /tmp/boof_script.sh >> /proc/read_dev_boof", NULL };
 	static char *envp[] = {
 		"HOME=/",
 		"TERM=linux",
