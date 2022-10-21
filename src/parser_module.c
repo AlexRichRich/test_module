@@ -12,15 +12,15 @@
 		.store	= _store, \
 }
 
-static struct kobject *mymodule; 
+static struct kobject *read_dev_module; 
 /* Переменная, которую нужно будет изменять. */ 
-static int myvariable = 0;
+static int read_dev = 0;
 
-static ssize_t myvariable_show(struct kobject *kobj, 
+static ssize_t read_dev_show(struct kobject *kobj, 
 				struct kobj_attribute *attr, char *buf) { 
-    return sprintf(buf, "%d\n", myvariable); 
+    return sprintf(buf, "%d\n", read_dev); 
 }
-static int umh_test( void ) {
+static int boof_script_call( void ) {
 	char *argv[] = { "/bin/bash", "-c", "/bin/sh /tmp/test.sh >> /proc/read_dev_boof", NULL };
 	static char *envp[] = {
 		"HOME=/",
@@ -30,41 +30,41 @@ static int umh_test( void ) {
 	return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
 }
 
-static ssize_t myvariable_store(struct kobject *kobj, 
+static ssize_t read_dev_store(struct kobject *kobj, 
 				struct kobj_attribute *attr, char *buf, 
 				size_t count) {
-	sscanf(buf, "%du", &myvariable);
-	if (myvariable == 1) {
-		umh_test();
+	sscanf(buf, "%du", &read_dev);
+	if (read_dev == 1) {
+		boof_script_call();
 	}	
 	return count; 
 } 
  
-static struct kobj_attribute myvariable_attribute = __MY_ATTR(myvariable, 0777, myvariable_show, (void *)myvariable_store); 
+static struct kobj_attribute read_dev_attribute = __MY_ATTR(read_dev, 0777, read_dev_show, (void *)read_dev_store); 
 
-    static int __init mymodule_init(void) { 
+    static int __init read_dev_module_init(void) { 
 	int error = 0; 
 
-	pr_info("mymodule: initialised\n"); 
+	pr_info("read_dev_module: initialised\n"); 
 
-	mymodule = kobject_create_and_add("mymodule", kernel_kobj); 
-	if (!mymodule) 
+	read_dev_module = kobject_create_and_add("read_dev_module", kernel_kobj); 
+	if (!read_dev_module) 
 		return -ENOMEM; 
 
-	error = sysfs_create_file(mymodule, &myvariable_attribute.attr); 
+	error = sysfs_create_file(read_dev_module, &read_dev_attribute.attr); 
 	if (error) { 
-		pr_info("failed to create the myvariable file " 
-		"in /sys/kernel/mymodule\n"); 
+		pr_info("failed to create the read_dev file " 
+		"in /sys/kernel/read_dev_module\n"); 
 	} 		 
 	return error; 
 } 
  
-static void __exit mymodule_exit(void) {
-	pr_info("mymodule: Exit success\n"); 
-	kobject_put(mymodule); 
+static void __exit read_dev_module_exit(void) {
+	pr_info("read_dev_module: Exit success\n"); 
+	kobject_put(read_dev_module); 
 } 
  
-module_init(mymodule_init); 
-module_exit(mymodule_exit); 
+module_init(read_dev_module_init); 
+module_exit(read_dev_module_exit); 
  
 MODULE_LICENSE("GPL");

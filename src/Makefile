@@ -16,11 +16,11 @@ q:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 	sudo insmod parser_module.ko
 	#sudo insmod procfs_boofer.ko
-	cat /sys/kernel/mymodule/myvariable
-	sudo echo "123" > /sys/kernel/mymodule/myvariable
-	cat /sys/kernel/mymodule/myvariable
-	sudo echo "1" > /sys/kernel/mymodule/myvariable
-	cat /sys/kernel/mymodule/myvariable
+	cat /sys/kernel/read_dev_module/read_dev
+	sudo echo "123" > /sys/kernel/read_dev_module/read_dev
+	cat /sys/kernel/read_dev_module/read_dev
+	sudo echo "1" > /sys/kernel/read_dev_module/read_dev
+	cat /sys/kernel/read_dev_module/read_dev
 	#cat /proc/read_dev_boof
 	sudo rmmod parser_module.ko
 	dmesg

@@ -93,7 +93,6 @@ static int __init proc_file_init(void) {
 	proc_set_size(read_dev_file, 80);
 	proc_set_user(read_dev_file, GLOBAL_ROOT_UID, GLOBAL_ROOT_GID);
 	pr_info("/proc/%s created", PROCFS_NAME);
-	pr_info("EXIT CODE OF FUNC %d\n", umh_test());
 	return 0;
 }
 
