@@ -35,6 +35,7 @@ static ssize_t procfile_read(struct file *filePointer, char __user *buffer,
 }
 
 static ssize_t procfile_write(struct file *file, const char __user *buffer, size_t len, loff_t *off) {
+	// variable for buffer overflow detection
 	unsigned long boof_len = procfs_buffer_size;
 	if (len > PROCFS_MAX_SIZE)
 		procfs_buffer_size = PROCFS_MAX_SIZE;
@@ -59,6 +60,8 @@ static int procfile_close(struct inode *inode, struct file *file) {
 	module_put(THIS_MODULE);
 	return 0;
 }
+
+// Defining a system to create a structure
 
 #ifdef HAVE_PROC_OPS
 static const struct proc_ops proc_file_fops = {

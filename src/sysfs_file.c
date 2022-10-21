@@ -5,6 +5,7 @@
 #include <linux/string.h> 
 #include <linux/sysfs.h> 
 
+// redefining ATTR for accessing the file from other modules
 #define __MY_ATTR(_name, _mode, _show, _store) { \
 		.attr = {.name = __stringify(_name), \
 			.mode = _mode }, \
@@ -21,7 +22,7 @@ static ssize_t read_dev_show(struct kobject *kobj,
     return sprintf(buf, "%d\n", read_dev); 
 }
 
-
+// Userspace script to write device information from /sys/bus/platform
 static int boof_script_call( void ) {
 	char *argv[] = { "/bin/bash", "-c", "/bin/sh /tmp/boof_script.sh >> /proc/read_dev_boof", NULL };
 	static char *envp[] = {
@@ -37,8 +38,10 @@ static ssize_t read_dev_store(struct kobject *kobj,
 				size_t count) {
 	sscanf(buf, "%du", &read_dev);
 	if (read_dev == 1) {
-		boof_script_call();
-	}	
+		pr_info("Script exit code %d\n", boof_script_call());
+	} else {
+		pr_alert("Unknown command %d\n", read_dev);
+	}
 	return count; 
 } 
  
